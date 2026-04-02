@@ -212,6 +212,85 @@
       .right .rule {
         margin-top: 2.5vh;
       }
+
+      /* ===== ADAPTATION ECRANS ===== */
+
+/* Empêche les textes de devenir trop grands ou trop petits */
+
+.title{
+font-size:clamp(40px,3.4vw,75px);
+}
+
+.kicker{
+font-size:clamp(20px,2vw,40px);
+}
+
+.rowText{
+font-size:clamp(26px,3vw,58px);
+}
+
+.subText{
+font-size:clamp(14px,1.5vw,26px);
+}
+
+.clock{
+font-size:clamp(42px,4vw,80px);
+}
+
+.rightTitleSmall{
+font-size:clamp(18px,2vw,36px);
+}
+
+.rightTitleBig{
+font-size:clamp(30px,3vw,54px);
+}
+
+.rightRow .rowText{
+font-size:clamp(16px,1.5vw,28px);
+}
+
+/* Adaptation écrans plus petits */
+
+@media (max-width:1600px){
+
+.wrap{
+grid-template-columns:20vw 55vw 25vw;
+}
+
+.row{
+gap:1vw;
+}
+
+.rowText{
+font-size:2.6vw;
+}
+
+.subText{
+font-size:1.3vw;
+}
+
+.rightRow .rowText{
+font-size:1.3vw;
+}
+
+.clock{
+font-size:3.5vw;
+}
+
+}
+
+/* Empêche les textes de déborder */
+
+.rowText,
+.rightRow .rowText{
+min-width:0;
+flex:1;
+}
+
+.wrap{
+max-width:1920px;
+margin:auto;
+}
     </style>
   </head>
 
@@ -433,146 +512,203 @@
         },
       };
 
-      const WINDOW_MIN = 120;
+    var WINDOW_MIN = 120;
 
-      function pad2(n) {
-        return String(n).padStart(2, "0");
+function pad2(n) {
+  return (n < 10 ? "0" : "") + n;
+}
+
+function fmtClock(d) {
+  return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+}
+
+function toDateToday(hhmm) {
+  var parts = hhmm.split(":");
+  var h = parseInt(parts[0], 10);
+  var m = parseInt(parts[1], 10);
+
+  var d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function minsBetween(a, b) {
+  return Math.floor((b - a) / 60000);
+}
+
+function fmtDuration(mins) {
+  if (mins < 0) mins = 0;
+  if (mins < 60) return mins + " minute" + (mins > 1 ? "s" : "");
+  var h = Math.floor(mins / 60);
+  var m = mins % 60;
+  return m ? (h + "h " + m + " minutes") : (h + "h");
+}
+
+function cap(s) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function getCurrentPark() {
+  var parkId = "neupre";
+
+  if (window.location.search) {
+    var query = window.location.search.substring(1);
+    var parts = query.split("&");
+    var i, pair;
+
+    for (i = 0; i < parts.length; i++) {
+      pair = parts[i].split("=");
+      if (pair[0] === "park" && pair[1]) {
+        parkId = pair[1];
       }
+    }
+  }
 
-      function fmtClock(d) {
-        return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-      }
+  parkId = parkId.toLowerCase();
 
-      function toDateToday(hhmm) {
-        const [h, m] = hhmm.split(":").map(Number);
-        const d = new Date();
-        d.setHours(h, m, 0, 0);
-        return d;
-      }
+  if (PARKS[parkId]) {
+    return PARKS[parkId];
+  }
 
-      function minsBetween(a, b) {
-        return Math.floor((b - a) / 60000);
-      }
+  return PARKS["neupre"];
+}
 
-      function fmtDuration(mins) {
-        if (mins < 0) mins = 0;
-        if (mins < 60) return `${mins} minute${mins > 1 ? "s" : ""}`;
-        const h = Math.floor(mins / 60);
-        const m = mins % 60;
-        return m ? `${h}h ${m} minutes` : `${h}h`;
-      }
+var currentPark = getCurrentPark();
 
-      function cap(s) {
-        if (!s) return "";
-        return s.charAt(0).toUpperCase() + s.slice(1);
-      }
+var DAY = [];
+var i, item;
 
-      function getCurrentPark() {
-        var parkId = "neupre";
+for (i = 0; i < currentPark.schedule.length; i++) {
+  item = currentPark.schedule[i];
+  DAY.push({
+    timeStr: item.time,
+    colorName: item.color,
+    colorLabel: cap(item.color),
+    colorHex: COLOR_HEX[item.color] || "#ffffff",
+    time: toDateToday(item.time)
+  });
+}
 
-        if (window.location.search) {
-          var query = window.location.search.substring(1);
+function render() {
+  var now = new Date();
+  var clockEl = document.getElementById("clock");
+  if (clockEl) {
+    clockEl.textContent = fmtClock(now);
+  }
 
-          var parts = query.split("&");
+  var upcoming = [];
+  var s, minsLeft;
 
-          for (var i = 0; i < parts.length; i++) {
-            var pair = parts[i].split("=");
+  for (i = 0; i < DAY.length; i++) {
+    s = DAY[i];
+    minsLeft = minsBetween(now, s.time);
 
-            if (pair[0] == "park") {
-              parkId = pair[1];
-            }
-          }
-        }
+    if (minsLeft > 0 && minsLeft <= WINDOW_MIN) {
+      upcoming.push({
+        timeStr: s.timeStr,
+        colorLabel: s.colorLabel,
+        colorHex: s.colorHex,
+        minsLeft: minsLeft
+      });
+    }
+  }
 
-        parkId = parkId.toLowerCase();
+  upcoming.sort(function(a, b) {
+    return a.minsLeft - b.minsLeft;
+  });
 
-        if (PARKS[parkId]) {
-          return PARKS[parkId];
-        }
+  var upcomingEl = document.getElementById("upcomingRows");
+  var html = "";
 
-        return PARKS["neupre"];
-      }
+  for (i = 0; i < upcoming.length; i++) {
+    s = upcoming[i];
+    html +=
+      '<div class="row">' +
+        '<div class="dot" style="background:' + s.colorHex + '"></div>' +
+        '<div class="rowText">' + fmtDuration(s.minsLeft) + ' – ' + s.colorLabel + '</div>' +
+        '<div class="subText">' + s.timeStr + '</div>' +
+      '</div>';
+  }
 
-      const currentPark = getCurrentPark();
+  if (upcomingEl) {
+    upcomingEl.innerHTML = html;
+  }
 
-      document.getElementById("parkName").textContent = currentPark.name;
-      document.title = `${currentPark.name} - Temps restant`;
+  var past = [];
+  var minsAgo;
 
-      const DAY = currentPark.schedule.map((item) => ({
-        timeStr: item.time,
-        colorName: item.color,
-        colorLabel: cap(item.color),
-        colorHex: COLOR_HEX[item.color] || "#ffffff",
-        time: toDateToday(item.time),
-      }));
+  for (i = 0; i < DAY.length; i++) {
+    s = DAY[i];
+    minsAgo = minsBetween(s.time, now);
 
-      function render() {
-        const now = new Date();
+    if (minsAgo >= 0) {
+      past.push({
+        timeStr: s.timeStr,
+        colorLabel: s.colorLabel,
+        colorHex: s.colorHex,
+        minsAgo: minsAgo
+      });
+    }
+  }
 
-        document.getElementById("clock").textContent = fmtClock(now);
+  past.sort(function(a, b) {
+    return a.minsAgo - b.minsAgo;
+  });
 
-        const upcoming = DAY.map((s) => ({
-          ...s,
-          minsLeft: minsBetween(now, s.time),
-        }))
-          .filter((s) => s.minsLeft > 0 && s.minsLeft <= WINDOW_MIN)
-          .sort((a, b) => a.minsLeft - b.minsLeft);
+  var last = past.length ? past[0] : null;
+  var lastEl = document.getElementById("lastRow");
+  var rightStatus = document.getElementById("rightStatus");
 
-        const upcomingEl = document.getElementById("upcomingRows");
-        upcomingEl.innerHTML = upcoming
-          .map(
-            (s) => `
-        <div class="row">
-          <div class="dot" style="background:${s.colorHex}"></div>
-          <div class="rowText">${fmtDuration(s.minsLeft)} – ${s.colorLabel}</div>
-          <div class="subText">${s.timeStr}</div>
-        </div>
-      `,
-          )
-          .join("");
+  if (last) {
+    if (lastEl) {
+      lastEl.innerHTML =
+        '<div class="rightRow">' +
+          '<div class="dot" style="background:' + last.colorHex + '"></div>' +
+          '<div class="rowText">' + fmtDuration(last.minsAgo) + ' – ' + last.colorLabel + '</div>' +
+        '</div>';
+    }
+    if (rightStatus) {
+      rightStatus.textContent = "Dernière sortie : " + last.timeStr;
+    }
+  } else {
+    if (lastEl) {
+      lastEl.innerHTML = "";
+    }
+    if (rightStatus) {
+      rightStatus.textContent = "Aucune sortie encore aujourd’hui.";
+    }
+  }
 
-        const past = DAY.map((s) => ({
-          ...s,
-          minsAgo: minsBetween(s.time, now),
-        }))
-          .filter((s) => s.minsAgo >= 0)
-          .sort((a, b) => a.minsAgo - b.minsAgo);
+  var mainStatus = document.getElementById("mainStatus");
 
-        const last = past.length ? past[0] : null;
-        const lastEl = document.getElementById("lastRow");
+  if (!DAY.length) {
+    if (mainStatus) {
+      mainStatus.textContent = "Aucun horaire configuré pour ce parc.";
+    }
+    return;
+  }
 
-        if (last) {
-          lastEl.innerHTML = `
-          <div class="rightRow">
-            <div class="dot" style="background:${last.colorHex}"></div>
-            <div class="rowText">${fmtDuration(last.minsAgo)} – ${last.colorLabel}</div>
-          </div>
-        `;
-          document.getElementById("rightStatus").textContent =
-            `Dernière sortie : ${last.timeStr}`;
-        } else {
-          lastEl.innerHTML = "";
-          document.getElementById("rightStatus").textContent =
-            "Aucune sortie encore aujourd’hui.";
-        }
+  var first = DAY[0].time;
+  var lastSlot = DAY[DAY.length - 1].time;
 
-        const first = DAY[0]?.time;
-        const lastSlot = DAY[DAY.length - 1]?.time;
-        const mainStatus = document.getElementById("mainStatus");
+  if (now < first) {
+    if (mainStatus) {
+      mainStatus.textContent = "Les sessions commencent à " + DAY[0].timeStr + ".";
+    }
+  } else if (now > lastSlot && upcoming.length === 0) {
+    if (mainStatus) {
+      mainStatus.textContent = "Fin des sorties pour aujourd’hui.";
+    }
+  } else {
+    if (mainStatus) {
+      mainStatus.textContent = "";
+    }
+  }
+}
 
-        if (!DAY.length) {
-          mainStatus.textContent = "Aucun horaire configuré pour ce parc.";
-        } else if (now < first) {
-          mainStatus.textContent = `Les sessions commencent à ${DAY[0].timeStr}.`;
-        } else if (now > lastSlot && upcoming.length === 0) {
-          mainStatus.textContent = "Fin des sorties pour aujourd’hui.";
-        } else {
-          mainStatus.textContent = "";
-        }
-      }
-
-      render();
-      setInterval(render, 1000);
-    </script>
+render();
+setInterval(render, 1000);
+</script>x
   </body>
 </html>
