@@ -51,6 +51,7 @@
       * {
         box-sizing: border-box;
       }
+
       html,
       body {
         height: 100%;
@@ -213,83 +214,74 @@
         margin-top: 2.5vh;
       }
 
-      /* ===== ADAPTATION ECRANS ===== */
+      .title {
+        font-size: clamp(40px, 3.4vw, 75px);
+      }
 
-/* Empêche les textes de devenir trop grands ou trop petits */
+      .kicker {
+        font-size: clamp(20px, 2vw, 40px);
+      }
 
-.title{
-  font-size:clamp(40px,3.4vw,75px);
-}
+      .rowText {
+        font-size: clamp(36px, 3.6vw, 70px);
+      }
 
-.kicker{
-  font-size:clamp(20px,2vw,40px);
-}
+      .subText {
+        font-size: clamp(14px, 1.5vw, 26px);
+      }
 
-.rowText{
-  font-size:clamp(36px,3.6vw,70px);
-}
+      .clock {
+        font-size: clamp(42px, 4vw, 80px);
+      }
 
-.subText{
-  font-size:clamp(14px,1.5vw,26px);
-}
+      .rightTitleSmall {
+        font-size: clamp(18px, 2vw, 36px);
+      }
 
-.clock{
-  font-size:clamp(42px,4vw,80px);
-}
+      .rightTitleBig {
+        font-size: clamp(30px, 3vw, 54px);
+      }
 
-.rightTitleSmall{
-  font-size:clamp(18px,2vw,36px);
-}
+      .rightRow .rowText {
+        font-size: clamp(24px, 2.2vw, 43px);
+      }
 
-.rightTitleBig{
-  font-size:clamp(30px,3vw,54px);
-}
+      @media (max-width: 1600px) {
+        .wrap {
+          grid-template-columns: 20vw 55vw 25vw;
+        }
 
-.rightRow .rowText{
-  font-size:clamp(24px,2.2vw,43px);
-}
-/* Adaptation écrans plus petits */
+        .row {
+          gap: 1vw;
+        }
 
-@media (max-width:1600px){
+        .rowText {
+          font-size: 2.6vw;
+        }
 
-.wrap{
-grid-template-columns:20vw 55vw 25vw;
-}
+        .subText {
+          font-size: 1.3vw;
+        }
 
-.row{
-gap:1vw;
-}
+        .rightRow .rowText {
+          font-size: 1.6vw;
+        }
 
-.rowText{
-font-size:2.6vw;
-}
+        .clock {
+          font-size: 3.5vw;
+        }
+      }
 
-.subText{
-font-size:1.3vw;
-}
+      .rowText,
+      .rightRow .rowText {
+        min-width: 0;
+        flex: 1;
+      }
 
-.rightRow .rowText{
-font-size:1.6vw;
-}
-
-.clock{
-font-size:3.5vw;
-}
-
-}
-
-/* Empêche les textes de déborder */
-
-.rowText,
-.rightRow .rowText{
-min-width:0;
-flex:1;
-}
-
-.wrap{
-max-width:1920px;
-margin:auto;
-}
+      .wrap {
+        max-width: 1920px;
+        margin: auto;
+      }
     </style>
   </head>
 
@@ -338,7 +330,62 @@ margin:auto;
         turquoise: "#39E6D0",
       };
 
-      // AJOUTE TES PARCS ICI AU FUR ET À MESURE
+      var UI_TEXTS = {
+        fr: {
+          kicker: "En pleine session de jump",
+          title: "Il vous reste...",
+          rightSmall: "C'est fini",
+          rightBig: "depuis",
+          lastExit: "Dernière sortie : ",
+          noExitYet: "Aucune sortie encore aujourd’hui.",
+          startsAt: "Les sessions commencent à ",
+          dayFinished: "Fin des sorties pour aujourd’hui.",
+          noSchedule: "Aucun horaire configuré pour ce parc.",
+          minute: "minute",
+          minutes: "minutes",
+        },
+        nl: {
+          kicker: "Volop aan het jumpen",
+          title: "Jullie hebben nog...",
+          rightSmall: "Het is gedaan",
+          rightBig: "sinds",
+          lastExit: "Laatste uitgang: ",
+          noExitYet: "Nog geen uitgang vandaag.",
+          startsAt: "De sessies starten om ",
+          dayFinished: "Einde van de uitgangen voor vandaag.",
+          noSchedule: "Geen uren ingesteld voor dit park.",
+          minute: "minuut",
+          minutes: "minuten",
+        },
+      };
+
+      var COLOR_LABELS = {
+        fr: {
+          violet: "Violet",
+          jaune: "Jaune",
+          corail: "Corail",
+          rose: "Rose",
+          bleu: "Bleu",
+          argent: "Argent",
+          vert: "Vert",
+          rouge: "Rouge",
+          orange: "Orange",
+          turquoise: "Turquoise",
+        },
+        nl: {
+          violet: "Paars",
+          jaune: "Geel",
+          corail: "Koraal",
+          rose: "Roze",
+          bleu: "Blauw",
+          argent: "Zilver",
+          vert: "Groen",
+          rouge: "Rood",
+          orange: "Oranje",
+          turquoise: "Turkoois",
+        },
+      };
+
       var PARKS = {
         neupre: {
           name: "Neupré",
@@ -481,6 +528,67 @@ margin:auto;
           ],
         },
 
+        valeurope: {
+          name: "Val d'Europe",
+          schedule: [
+            { time: "11:00", color: "violet" },
+            { time: "11:30", color: "jaune" },
+            { time: "12:00", color: "corail" },
+            { time: "12:30", color: "rose" },
+            { time: "13:00", color: "bleu" },
+            { time: "13:30", color: "argent" },
+            { time: "14:00", color: "vert" },
+            { time: "14:30", color: "rouge" },
+            { time: "15:00", color: "orange" },
+            { time: "15:30", color: "violet" },
+            { time: "16:00", color: "turquoise" },
+            { time: "16:30", color: "rouge" },
+            { time: "17:00", color: "corail" },
+            { time: "17:30", color: "bleu" },
+            { time: "18:00", color: "argent" },
+            { time: "18:30", color: "vert" },
+            { time: "19:00", color: "rose" },
+            { time: "19:30", color: "orange" },
+            { time: "20:00", color: "jaune" },
+            { time: "20:30", color: "turquoise" },
+            { time: "21:00", color: "violet" },
+            { time: "21:30", color: "rouge" },
+            { time: "22:00", color: "argent" },
+            { time: "22:30", color: "bleu" },
+            { time: "23:00", color: "corail" },
+            { time: "23:30", color: "vert" },
+            { time: "00:00", color: "orange" },
+          ],
+        },
+
+        oostakker: {
+          name: "Oostakker",
+          lang: "nl",
+          schedule: [
+            { time: "11:00", color: "violet" },
+            { time: "11:30", color: "jaune" },
+            { time: "12:00", color: "corail" },
+            { time: "12:30", color: "rose" },
+            { time: "13:00", color: "bleu" },
+            { time: "13:30", color: "argent" },
+            { time: "14:00", color: "vert" },
+            { time: "14:30", color: "rouge" },
+            { time: "15:00", color: "orange" },
+            { time: "15:30", color: "turquoise" },
+            { time: "16:00", color: "violet" },
+            { time: "16:30", color: "rouge" },
+            { time: "17:00", color: "corail" },
+            { time: "17:30", color: "bleu" },
+            { time: "18:00", color: "argent" },
+            { time: "18:30", color: "vert" },
+            { time: "19:00", color: "rose" },
+            { time: "19:30", color: "orange" },
+            { time: "20:00", color: "jaune" },
+            { time: "20:30", color: "turquoise" },
+            { time: "21:00", color: "violet" },
+          ],
+        },
+
         estaimpuis: {
           name: "Estaimpuis",
           schedule: [
@@ -511,208 +619,287 @@ margin:auto;
         },
       };
 
-    var WINDOW_MIN = 120;
+      var WINDOW_MIN = 120;
 
-function pad2(n) {
-  return (n < 10 ? "0" : "") + n;
-}
+      function getCurrentPark() {
+        var parkId = "neupre";
 
-function fmtClock(d) {
-  return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
-}
+        if (window.location.search) {
+          var query = window.location.search.substring(1);
+          var parts = query.split("&");
+          var i, pair;
 
-function toDateToday(hhmm) {
-  var parts = hhmm.split(":");
-  var h = parseInt(parts[0], 10);
-  var m = parseInt(parts[1], 10);
+          for (i = 0; i < parts.length; i++) {
+            pair = parts[i].split("=");
+            if (pair[0] === "park" && pair[1]) {
+              parkId = pair[1];
+            }
+          }
+        }
 
-  var d = new Date();
-  d.setHours(h, m, 0, 0);
-  return d;
-}
+        parkId = parkId.toLowerCase();
 
-function minsBetween(a, b) {
-  return Math.floor((b - a) / 60000);
-}
+        if (PARKS[parkId]) {
+          return PARKS[parkId];
+        }
 
-function fmtDuration(mins) {
-  if (mins < 0) mins = 0;
-  if (mins < 60) return mins + " minute" + (mins > 1 ? "s" : "");
-  var h = Math.floor(mins / 60);
-  var m = mins % 60;
-  return m ? (h + "h " + m + " minutes") : (h + "h");
-}
-
-function cap(s) {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function getCurrentPark() {
-  var parkId = "neupre";
-
-  if (window.location.search) {
-    var query = window.location.search.substring(1);
-    var parts = query.split("&");
-    var i, pair;
-
-    for (i = 0; i < parts.length; i++) {
-      pair = parts[i].split("=");
-      if (pair[0] === "park" && pair[1]) {
-        parkId = pair[1];
+        return PARKS["neupre"];
       }
-    }
-  }
 
-  parkId = parkId.toLowerCase();
+      var currentPark = getCurrentPark();
 
-  if (PARKS[parkId]) {
-    return PARKS[parkId];
-  }
+      function getCurrentLang() {
+        return currentPark.lang || "fr";
+      }
 
-  return PARKS["neupre"];
-}
+      function getUIText(key) {
+        var lang = getCurrentLang();
 
-var currentPark = getCurrentPark();
+        if (UI_TEXTS[lang] && UI_TEXTS[lang][key]) {
+          return UI_TEXTS[lang][key];
+        }
 
-var parkNameEl = document.getElementById("parkName");
-if (parkNameEl) {
-  parkNameEl.textContent = currentPark.name;
-}
+        return UI_TEXTS.fr[key] || "";
+      }
 
-var DAY = [];
-var i, item;
+      function pad2(n) {
+        return (n < 10 ? "0" : "") + n;
+      }
 
-for (i = 0; i < currentPark.schedule.length; i++) {
-  item = currentPark.schedule[i];
-  DAY.push({
-    timeStr: item.time,
-    colorName: item.color,
-    colorLabel: cap(item.color),
-    colorHex: COLOR_HEX[item.color] || "#ffffff",
-    time: toDateToday(item.time)
-  });
-}
+      function fmtClock(d) {
+        return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+      }
 
-function render() {
-  var now = new Date();
-  var clockEl = document.getElementById("clock");
-  if (clockEl) {
-    clockEl.textContent = fmtClock(now);
-  }
+      function toDateToday(hhmm) {
+        var parts = hhmm.split(":");
+        var h = parseInt(parts[0], 10);
+        var m = parseInt(parts[1], 10);
 
-  var upcoming = [];
-  var s, minsLeft;
+        var d = new Date();
+        d.setHours(h, m, 0, 0);
+        return d;
+      }
 
-  for (i = 0; i < DAY.length; i++) {
-    s = DAY[i];
-    minsLeft = minsBetween(now, s.time);
+      function minsBetween(a, b) {
+        return Math.floor((b - a) / 60000);
+      }
 
-    if (minsLeft > 0 && minsLeft <= WINDOW_MIN) {
-      upcoming.push({
-        timeStr: s.timeStr,
-        colorLabel: s.colorLabel,
-        colorHex: s.colorHex,
-        minsLeft: minsLeft
-      });
-    }
-  }
+      function fmtDuration(mins) {
+        var lang = getCurrentLang();
 
-  upcoming.sort(function(a, b) {
-    return a.minsLeft - b.minsLeft;
-  });
+        if (mins < 0) mins = 0;
 
-  var upcomingEl = document.getElementById("upcomingRows");
-  var html = "";
+        if (mins < 60) {
+          if (mins > 1) {
+            return mins + " " + getUIText("minutes");
+          }
+          return mins + " " + getUIText("minute");
+        }
 
-  for (i = 0; i < upcoming.length; i++) {
-    s = upcoming[i];
-    html +=
-      '<div class="row">' +
-        '<div class="dot" style="background:' + s.colorHex + '"></div>' +
-        '<div class="rowText">' + fmtDuration(s.minsLeft) + ' – ' + s.colorLabel + '</div>' +
-        '<div class="subText">' + s.timeStr + '</div>' +
-      '</div>';
-  }
+        var h = Math.floor(mins / 60);
+        var m = mins % 60;
 
-  if (upcomingEl) {
-    upcomingEl.innerHTML = html;
-  }
+        if (lang === "nl") {
+          if (m) {
+            return h + "u " + m + " " + getUIText("minutes");
+          }
+          return h + "u";
+        }
 
-  var past = [];
-  var minsAgo;
+        if (m) {
+          return h + "h " + m + " " + getUIText("minutes");
+        }
 
-  for (i = 0; i < DAY.length; i++) {
-    s = DAY[i];
-    minsAgo = minsBetween(s.time, now);
+        return h + "h";
+      }
 
-    if (minsAgo >= 0) {
-      past.push({
-        timeStr: s.timeStr,
-        colorLabel: s.colorLabel,
-        colorHex: s.colorHex,
-        minsAgo: minsAgo
-      });
-    }
-  }
+      function cap(s) {
+        if (!s) return "";
+        return s.charAt(0).toUpperCase() + s.slice(1);
+      }
 
-  past.sort(function(a, b) {
-    return a.minsAgo - b.minsAgo;
-  });
+      function getColorLabel(colorName) {
+        var lang = currentPark.lang || "fr";
 
-  var last = past.length ? past[0] : null;
-  var lastEl = document.getElementById("lastRow");
-  var rightStatus = document.getElementById("rightStatus");
+        if (COLOR_LABELS[lang] && COLOR_LABELS[lang][colorName]) {
+          return COLOR_LABELS[lang][colorName];
+        }
 
-  if (last) {
-    if (lastEl) {
-      lastEl.innerHTML =
-        '<div class="rightRow">' +
-          '<div class="dot" style="background:' + last.colorHex + '"></div>' +
-          '<div class="rowText">' + fmtDuration(last.minsAgo) + ' – ' + last.colorLabel + '</div>' +
-        '</div>';
-    }
-    if (rightStatus) {
-      rightStatus.textContent = "Dernière sortie : " + last.timeStr;
-    }
-  } else {
-    if (lastEl) {
-      lastEl.innerHTML = "";
-    }
-    if (rightStatus) {
-      rightStatus.textContent = "Aucune sortie encore aujourd’hui.";
-    }
-  }
+        return cap(colorName);
+      }
 
-  var mainStatus = document.getElementById("mainStatus");
+      var parkNameEl = document.getElementById("parkName");
+      if (parkNameEl) {
+        parkNameEl.textContent = currentPark.name;
+      }
 
-  if (!DAY.length) {
-    if (mainStatus) {
-      mainStatus.textContent = "Aucun horaire configuré pour ce parc.";
-    }
-    return;
-  }
+      var kickerEl = document.querySelector(".kicker");
+      if (kickerEl) {
+        kickerEl.textContent = getUIText("kicker");
+      }
 
-  var first = DAY[0].time;
-  var lastSlot = DAY[DAY.length - 1].time;
+      var titleEl = document.querySelector(".title");
+      if (titleEl) {
+        titleEl.textContent = getUIText("title");
+      }
 
-  if (now < first) {
-    if (mainStatus) {
-      mainStatus.textContent = "Les sessions commencent à " + DAY[0].timeStr + ".";
-    }
-  } else if (now > lastSlot && upcoming.length === 0) {
-    if (mainStatus) {
-      mainStatus.textContent = "Fin des sorties pour aujourd’hui.";
-    }
-  } else {
-    if (mainStatus) {
-      mainStatus.textContent = "";
-    }
-  }
-}
+      var rightSmallEl = document.querySelector(".rightTitleSmall");
+      if (rightSmallEl) {
+        rightSmallEl.textContent = getUIText("rightSmall");
+      }
 
-render();
-setInterval(render, 1000);
-</script>
+      var rightBigEl = document.querySelector(".rightTitleBig");
+      if (rightBigEl) {
+        rightBigEl.textContent = getUIText("rightBig");
+      }
+
+      var DAY = [];
+      var i, item;
+
+      for (i = 0; i < currentPark.schedule.length; i++) {
+        item = currentPark.schedule[i];
+        DAY.push({
+          timeStr: item.time,
+          colorName: item.color,
+          colorLabel: getColorLabel(item.color),
+          colorHex: COLOR_HEX[item.color] || "#ffffff",
+          time: toDateToday(item.time),
+        });
+      }
+
+      function render() {
+        var now = new Date();
+        var clockEl = document.getElementById("clock");
+        if (clockEl) {
+          clockEl.textContent = fmtClock(now);
+        }
+
+        var upcoming = [];
+        var s, minsLeft;
+
+        for (i = 0; i < DAY.length; i++) {
+          s = DAY[i];
+          minsLeft = minsBetween(now, s.time);
+
+          if (minsLeft > 0 && minsLeft <= WINDOW_MIN) {
+            upcoming.push({
+              timeStr: s.timeStr,
+              colorLabel: s.colorLabel,
+              colorHex: s.colorHex,
+              minsLeft: minsLeft,
+            });
+          }
+        }
+
+        upcoming.sort(function (a, b) {
+          return a.minsLeft - b.minsLeft;
+        });
+
+        var upcomingEl = document.getElementById("upcomingRows");
+        var html = "";
+
+        for (i = 0; i < upcoming.length; i++) {
+          s = upcoming[i];
+          html +=
+            '<div class="row">' +
+            '<div class="dot" style="background:' +
+            s.colorHex +
+            '"></div>' +
+            '<div class="rowText">' +
+            fmtDuration(s.minsLeft) +
+            " – " +
+            s.colorLabel +
+            "</div>" +
+            '<div class="subText">' +
+            s.timeStr +
+            "</div>" +
+            "</div>";
+        }
+
+        if (upcomingEl) {
+          upcomingEl.innerHTML = html;
+        }
+
+        var past = [];
+        var minsAgo;
+
+        for (i = 0; i < DAY.length; i++) {
+          s = DAY[i];
+          minsAgo = minsBetween(s.time, now);
+
+          if (minsAgo >= 0) {
+            past.push({
+              timeStr: s.timeStr,
+              colorLabel: s.colorLabel,
+              colorHex: s.colorHex,
+              minsAgo: minsAgo,
+            });
+          }
+        }
+
+        past.sort(function (a, b) {
+          return a.minsAgo - b.minsAgo;
+        });
+
+        var last = past.length ? past[0] : null;
+        var lastEl = document.getElementById("lastRow");
+        var rightStatus = document.getElementById("rightStatus");
+
+        if (last) {
+          if (lastEl) {
+            lastEl.innerHTML =
+              '<div class="rightRow">' +
+              '<div class="dot" style="background:' +
+              last.colorHex +
+              '"></div>' +
+              '<div class="rowText">' +
+              fmtDuration(last.minsAgo) +
+              " – " +
+              last.colorLabel +
+              "</div>" +
+              "</div>";
+          }
+          if (rightStatus) {
+            rightStatus.textContent = getUIText("lastExit") + last.timeStr;
+          }
+        } else {
+          if (lastEl) {
+            lastEl.innerHTML = "";
+          }
+          if (rightStatus) {
+            rightStatus.textContent = getUIText("noExitYet");
+          }
+        }
+
+        var mainStatus = document.getElementById("mainStatus");
+
+        if (!DAY.length) {
+          if (mainStatus) {
+            mainStatus.textContent = getUIText("noSchedule");
+          }
+          return;
+        }
+
+        var first = DAY[0].time;
+        var lastSlot = DAY[DAY.length - 1].time;
+
+        if (now < first) {
+          if (mainStatus) {
+            mainStatus.textContent = getUIText("startsAt") + DAY[0].timeStr + ".";
+          }
+        } else if (now > lastSlot && upcoming.length === 0) {
+          if (mainStatus) {
+            mainStatus.textContent = getUIText("dayFinished");
+          }
+        } else {
+          if (mainStatus) {
+            mainStatus.textContent = "";
+          }
+        }
+      }
+
+      render();
+      setInterval(render, 1000);
+    </script>
   </body>
 </html>
