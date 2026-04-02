@@ -326,7 +326,7 @@ margin:auto;
     </div>
 
     <script>
-      const COLOR_HEX = {
+      var COLOR_HEX = {
         violet: "#7B4DFF",
         jaune: "#FFD43B",
         corail: "#FF7A59",
@@ -340,7 +340,7 @@ margin:auto;
       };
 
       // AJOUTE TES PARCS ICI AU FUR ET À MESURE
-      const PARKS = {
+      var PARKS = {
         neupre: {
           name: "Neupré",
           schedule: [
@@ -575,6 +575,11 @@ function getCurrentPark() {
 }
 
 var currentPark = getCurrentPark();
+
+var parkNameEl = document.getElementById("parkName");
+if (parkNameEl) {
+  parkNameEl.textContent = currentPark.name;
+}
 
 var DAY = [];
 var i, item;
